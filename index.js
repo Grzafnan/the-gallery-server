@@ -89,7 +89,6 @@ app.get('/service/:id', async (req, res) => {
 
 
 // Reviews Api
-
 app.post('/review', async (req, res) => {
   try {
     const result = await Reviews.insertOne(req.body);
@@ -103,7 +102,44 @@ app.post('/review', async (req, res) => {
       error: error.message,
     });
   }
+});
+
+// Get Reviews
+app.get('/review/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const reviews = await Reviews.find({ serviceId: id }).toArray();
+    res.send({
+      success: true,
+      data: reviews
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.send({
+      status: 'error',
+      message: error.message,
+    })
+  }
 })
+
+app.get('/my-reviews', async (req, res) => {
+  try {
+    const result = await Reviews.find({ email: req.query.email }).toArray();
+    console.log(result);
+    res.send({
+      success: true,
+      data: result
+    });
+  }
+  catch (error) {
+    console.log(error);
+    res.send({
+      status: 'error',
+      message: error.message,
+    });
+  }
+});
 
 
 app.get('/', (req, res) => {
