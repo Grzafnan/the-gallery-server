@@ -35,6 +35,25 @@ async function run() {
 
 run().catch(err => console.log(err))
 
+const Service = client.db('thegalleryDb').collection('services');
+
+
+app.get('/services', async (req, res) => {
+  try {
+    const services = await Service.find({}).toArray();
+    res.send({
+      success: true,
+      data: services
+    })
+
+  } catch (error) {
+    console.log(error);
+    res.send({
+      status: 'error',
+      message: error.message,
+    })
+  }
+})
 
 
 
