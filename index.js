@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const jwt = require('jsonwebtoken');
 const port = process.env.PORT || 5000;
 require('dotenv').config();
@@ -12,14 +12,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-
-// theGalleryDb
-// jF7z13zdpZoXbngi
-
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ncc8jsr.mongodb.net/?retryWrites=true&w=majority`;
-
-console.log(uri);
 
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
@@ -37,7 +30,26 @@ run().catch(err => console.log(err))
 
 const Service = client.db('thegalleryDb').collection('services');
 
+// home page services
+app.get('/home-services', async (req, res) => {
+  try {
+    const services = await Service.find({}).limit(3).toArray();
+    res.send({
+      success: true,
+      data: services
+    })
 
+  } catch (error) {
+    console.log(error);
+    res.send({
+      status: 'error',
+      message: error.message,
+    })
+  }
+})
+
+
+//Services
 app.get('/services', async (req, res) => {
   try {
     const services = await Service.find({}).toArray();
@@ -55,6 +67,24 @@ app.get('/services', async (req, res) => {
   }
 })
 
+//Single Service
+app.get('/service/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const services = await Service.findOne({ _id: ObjectId(id) });
+    res.send({
+      success: true,
+      data: services
+    })
+
+  } catch (error) {
+    console.log(error);
+    res.send({
+      status: 'error',
+      message: error.message,
+    })
+  }
+})
 
 
 
