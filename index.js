@@ -29,6 +29,7 @@ async function run() {
 run().catch(err => console.log(err))
 
 const Service = client.db('thegalleryDb').collection('services');
+const Reviews = client.db('thegalleryDb').collection('reviews');
 
 // home page services
 app.get('/home-services', async (req, res) => {
@@ -87,9 +88,22 @@ app.get('/service/:id', async (req, res) => {
 })
 
 
+// Reviews Api
 
+app.post('/review', async (req, res) => {
+  try {
+    const result = await Reviews.insertOne(req.body);
+    console.log(result);
+    res.send(result);
 
-
+  } catch (error) {
+    console.log(error);
+    res.send({
+      success: false,
+      error: error.message,
+    });
+  }
+})
 
 
 app.get('/', (req, res) => {
