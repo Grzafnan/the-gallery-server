@@ -178,6 +178,64 @@ app.delete('/my-review/:id', async (req, res) => {
 
 
 
+app.get("/my-review/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const review = await Reviews.findOne({ _id: ObjectId(id) });
+
+    res.send({
+      success: true,
+      data: review,
+    });
+  } catch (error) {
+    res.send({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+
+app.put("/my-review/:id", async (req, res) => {
+  const { id } = req.params;
+  const query = { _id: ObjectId(id) };
+  const status = req.body.message;
+  // console.log(status);
+  const updatedDoc = {
+    $set: {
+      message: status
+    }
+  }
+
+  try {
+    const result = await Reviews.updateOne(query, updatedDoc);
+    if (result.matchedCount) {
+      res.send({
+        success: true,
+        message: `successfully updated the review`,
+      });
+    } else {
+      res.send({
+        success: false,
+        error: "Couldn't update  the Review",
+      });
+    }
+  } catch (error) {
+    res.send({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+
+
+
+
+
+
+
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
