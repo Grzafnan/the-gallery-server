@@ -123,6 +123,9 @@ app.get('/review/:id', async (req, res) => {
   }
 })
 
+
+// ALl reviews api
+
 app.get('/my-reviews', async (req, res) => {
   try {
     const result = await Reviews.find({ email: req.query.email }).toArray();
@@ -140,6 +143,40 @@ app.get('/my-reviews', async (req, res) => {
     });
   }
 });
+
+
+//  Delete api 
+app.delete('/my-review/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const review = await Reviews.findOne({ _id: ObjectId(id) });
+
+    if (!review?._id) {
+      res.send({
+        success: false,
+        error: "Review doesn't exist",
+      });
+      return;
+    }
+
+    const result = await Reviews.deleteOne({ _id: ObjectId(id) });
+
+    if (result.deletedCount) {
+      res.send({
+        success: true,
+        message: `Successfully deleted the review`,
+      });
+    } else {
+    }
+  } catch (error) {
+    res.send({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+
 
 
 app.get('/', (req, res) => {
