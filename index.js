@@ -51,6 +51,12 @@ app.get('/home-services', async (req, res) => {
 
 
 //Services
+
+
+
+
+
+
 app.get('/services', async (req, res) => {
   try {
     const services = await Service.find({}).sort({ $natural: -1 }).toArray();
@@ -86,6 +92,32 @@ app.get('/service/:id', async (req, res) => {
     })
   }
 })
+
+
+app.post('/services', async (req, res) => {
+  try {
+    const result = await Service.insertOne(req.body);
+    if (result.insertedId) {
+      res.send({
+        success: true,
+        message: `Successfully created the ${req.body.name} with id ${result.insertedId}`,
+      });
+    } else {
+      res.send({
+        success: false,
+        error: "Couldn't create the service",
+      });
+    }
+  } catch (error) {
+    console.log(error.name.bgRed, error.message.bold);
+    res.send({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+
 
 
 // Reviews Api
