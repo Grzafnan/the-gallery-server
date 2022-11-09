@@ -34,7 +34,7 @@ const Reviews = client.db('thegalleryDb').collection('reviews');
 // home page services
 app.get('/home-services', async (req, res) => {
   try {
-    const services = await Service.find({}).limit(3).toArray();
+    const services = await Service.find({}).sort({ $natural: -1 }).limit(3).toArray();
     res.send({
       success: true,
       data: services
@@ -53,7 +53,7 @@ app.get('/home-services', async (req, res) => {
 //Services
 app.get('/services', async (req, res) => {
   try {
-    const services = await Service.find({}).toArray();
+    const services = await Service.find({}).sort({ $natural: -1 }).toArray();
     res.send({
       success: true,
       data: services
@@ -92,7 +92,7 @@ app.get('/service/:id', async (req, res) => {
 app.post('/review', async (req, res) => {
   try {
     const result = await Reviews.insertOne(req.body);
-    console.log(result);
+    // console.log(result);
     res.send(result);
 
   } catch (error) {
@@ -108,7 +108,7 @@ app.post('/review', async (req, res) => {
 app.get('/review/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const reviews = await Reviews.find({ serviceId: id }).toArray();
+    const reviews = await Reviews.find({ serviceId: id }).sort({ $natural: -1 }).toArray();
     res.send({
       success: true,
       data: reviews
@@ -126,7 +126,7 @@ app.get('/review/:id', async (req, res) => {
 app.get('/my-reviews', async (req, res) => {
   try {
     const result = await Reviews.find({ email: req.query.email }).toArray();
-    console.log(result);
+    // console.log(result);
     res.send({
       success: true,
       data: result
