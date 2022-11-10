@@ -97,7 +97,7 @@ app.get('/services', async (req, res) => {
   } catch (error) {
     console.log(error);
     res.send({
-      status: 'error',
+      success: false,
       message: error.message,
     })
   }
@@ -169,7 +169,7 @@ app.post('/review', async (req, res) => {
 app.get('/review/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const reviews = await Reviews.find({ serviceId: id }).sort({ $natural: -1 }).toArray();
+    const reviews = await Reviews.find({ serviceId: id }).sort({ $reviewDate: -1 }).toArray();
     res.send({
       success: true,
       data: reviews
